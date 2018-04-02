@@ -6,11 +6,14 @@
   "bin": "./juicy.js",
   "author": "Geoff Selby",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GeoffSelby/juicy-cli.git"
+  },
   "dependencies": {
     "cli-table": "^0.3.1",
     "commander": "^2.15.1",
     "inquirer": "^5.2.0",
-    "inquirer-recursive": "^0.0.5",
-    "mongoose": "^5.0.12"
+    "inquirer-recursive": "^0.0.5"
   }
 }
