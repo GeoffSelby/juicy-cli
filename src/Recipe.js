@@ -1,11 +1,18 @@
+"use strict";
+
 const path = require('path');
 const fs = require('fs');
 const helpers = require('./helpers.js');
 const inquirer = require('inquirer');
 const Table = require('cli-table');
 
-module.exports = {
-	addRecipe(recipeName) {
+class Recipe {
+
+	constructor (recipeName) {
+		this.recipeName = recipeName;
+	}
+
+	add () {
 		let questions = [
 			{
 				type: 'input',
@@ -29,33 +36,23 @@ module.exports = {
 		}]).then(answers => {
 			let recipe = JSON.stringify(answers, null, 4);
 
-			if (!fs.existsSync('recipes')) {
-				fs.mkdirSync('recipes');
-			}
-
-			fs.writeFile(`./recipes/${recipeName}.json`, recipe, (err) => {
-				if (err) {
-					console.info('Could not save file... :(');
-				};
-
-				console.info(`${recipeName} has been saved!`);
-			})
+			this.saveRecipe(recipe);
 		});
-	},
+	}
 
-	deleteRecipe(recipeName) {
-		fs.unlink(`./recipes/${recipeName}.json`, (err) => {
+	delete () {
+		fs.unlink(`./recipes/${this.recipeName}.json`, (err) => {
     		if (err) {
-        		console.info(`${recipeName} could not be deleted!`);
+        		console.info(`${this.recipeName} could not be deleted!`);
     		} else {
-    			console.info(`Deleted ${recipeName}!`);
+    			console.info(`Deleted ${this.recipeName}!`);
     		}
 		});
-	},
+	}
 
-	makeRecipe(recipeName, options) {
+	make (options) {
 		// get recipe file
-		let recipeFile = fs.readFileSync(`./recipes/${recipeName}.json`);
+		let recipeFile = fs.readFileSync(`./recipes/${this.recipeName}.json`);
 
 		// parse recipe file
 		let parsedRecipe = JSON.parse(recipeFile);
@@ -93,10 +90,26 @@ module.exports = {
 
 		// finally calculate each flavor ml
 		for (let key in parsedRecipe.flavors) {
-			flavorMl = (parseInt(parsedRecipe.flavors[key].percentage) * parseInt(options.size)) / 100;
+			let flavorMl = (parseInt(parsedRecipe.flavors[key].percentage) * parseInt(options.size)) / 100;
 			table.push([parsedRecipe.flavors[key].flavor, flavorMl]);
 		};
 
 		console.log(table.toString()); 
 	}
-}
+
+	saveRecipe(recipe) {
+		if (!fs.existsSync('recipes')) {
+			fs.mkdirSync('recipes');
+		};
+
+		fs.writeFile(`./recipes/${this.recipeName}.json`, recipe, (err) => {
+			if (err) {
+				console.info('Could not save file... :(');
+			};
+
+			console.info(`${this.recipeName} has been saved!`);
+		});
+	}
+};
+
+module.exports = Recipe;

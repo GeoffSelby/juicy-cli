@@ -3,7 +3,7 @@
 'use strict';
 
 const program = require('commander');
-let Juicy = require('./src/core.js');
+const Recipe = require('./src/Recipe.js');
 
 program
     .version('0.0.1')
@@ -13,14 +13,16 @@ program
     .command('add <recipeName>')
     .description('Add a new recipe.')
     .action(recipeName => {
-        Juicy.addRecipe(recipeName);
+    	const recipe = new Recipe(recipeName);
+        recipe.add();
     });
 
 program
 	.command('delete <recipeName>')
 	.description('Delete a recipe.')
 	.action(recipeName => {
-		Juicy.deleteRecipe(recipeName);
+		const recipe = new Recipe(recipeName);
+		recipe.delete();
 	});
 
 program
@@ -30,7 +32,8 @@ program
 	.option('--strength <strength>', 'Target nicotine strength')
 	.option('--pg <pg>', 'Target PG percentage')
 	.action((recipeName, options) => {
-		Juicy.makeRecipe(recipeName, options);
+		const recipe = new Recipe(recipeName);
+		recipe.make(options);
 	});
 
 program.parse(process.argv);
